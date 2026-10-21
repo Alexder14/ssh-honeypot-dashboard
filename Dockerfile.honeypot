@@ -1,0 +1,24 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Instalar dependencias del sistema requeridas para criptografia si es necesario
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY honeypot/ ./honeypot/
+
+ENV PYTHONUNBUFFERED=1
+ENV HONEYPOT_HOST=0.0.0.0
+ENV HONEYPOT_PORT=2222
+ENV DB_PATH=/data/honeypot.db
+ENV HOST_KEY_FILE=/data/server.key
+
+EXPOSE 2222
+
+CMD ["python", "-m", "honeypot.server"]

@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  honeypot:
+    build:
+      context: .
+      dockerfile: Dockerfile.honeypot
+    image: shadowssh-honeypot:latest
+    container_name: shadowssh-honeypot
+    restart: unless-stopped
+    ports:
+      - "2222:2222"
+    environment:
+      - HONEYPOT_HOST=0.0.0.0
+      - HONEYPOT_PORT=2222
+      - DB_PATH=/data/honeypot.db
+      - HOST_KEY_FILE=/data/server.key
+    volumes:
+      - honeypot_shared_data:/data
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    image: shadowssh-dashboard:latest
+    container_name: shadowssh-dashboard
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      - DB_PATH=/data/honeypot.db
+    volumes:
+      - honeypot_shared_data:/data
+    depends_on:
+      - honeypot
+
+volumes:
+  honeypot_shared_data:

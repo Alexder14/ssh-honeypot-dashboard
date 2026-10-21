@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Base de datos y claves criptograficas
+*.db
+*.sqlite3
+*.key
+*.pub
+
+# Streamlit
+.streamlit/
+
+# Docker
+.docker/
